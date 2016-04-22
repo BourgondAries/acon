@@ -64,9 +64,7 @@ impl<'a> Parser<'a> {
 	}
 
 	fn consume_until_whitespace(&mut self) -> usize {
-		println!("Doesn't this fire?");
 		if let Some(ch) = self.get_current_char() {
-			println!("Here? {}", ch);
 			if ch.is_whitespace() {
 				return self.current;
 			}
@@ -75,9 +73,7 @@ impl<'a> Parser<'a> {
 			if let Some((o, ch)) = self.iterator.next() {
 				self.current = o;
 				self.curchar = Some(ch);
-				println!("HEY! {}", ch);
 				if ch.is_whitespace() {
-					println!("This fires");
 					break;
 				}
 			} else {
@@ -93,14 +89,43 @@ impl<'a> Parser<'a> {
 		(begin, end)
 	}
 
+	fn parse_value(&mut self) -> Value {
+		let begin = self.consume_until_non_whitespace();
+		if let Some(ch) = self.curchar {
+			match ch {
+				'\'' => {
+					println!("FOUND A SINGULAR QUOTE");
+				}
+				'{' => {
+					println!("FOUND SUBTABLE");
+				}
+				_ => {}
+			}
+		}
+		Value::Boolean(false)
+	}
+
+	fn parse_literal(&mut self) -> String {
+
+		"".into()
+	}
+
 }
 
 /// Tests ////////////////////////////////////////
 
 #[test]
+fn test_value() {
+	let mut parser = Parser::new("key 'value'");
+	parser.find_key();
+	parser.parse_value();
+	assert!(false);
+}
+
+#[test]
 fn test_whitespace() {
 	let mut parser = Parser::new("Test d");
-	for i in 1..50 {
+	for _ in 1..50 {
 		assert_eq!(parser.consume_until_non_whitespace(), 0);
 	}
 }
@@ -108,7 +133,7 @@ fn test_whitespace() {
 #[test]
 fn test_whitespace2() {
 	let mut parser = Parser::new("Test derp");
-	for i in 1..50 {
+	for _ in 1..50 {
 		assert_eq!(parser.consume_until_whitespace(), 4);
 	}
 }
