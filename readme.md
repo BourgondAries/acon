@@ -14,17 +14,52 @@ Values can be of the types array, boolean, integers, floats, strings, and tables
 	my_key 100
 	the?key|right? 'This is my string'
 
-## Tables ##
+## Grammar ##
+The grammar of koml is given by the following ebnf:
 
-A table is simply a value starting with a bare `{`.
+	START ::= ( KEY VALUE )* ;
 
-	key {
-		sub-key1 10
-		sub-key2 20
-		sub-key3 30
-		other-key 'This is my other key, it is key.other-key'
+	KEY ::= non_space+ ;
+	VALUE ::=
+		ARRAY
+		| BOOLEAN
+		| INTEGER
+		| FLOAT
+		| STRING
+		| TABLE ;
+
+	ARRAY ::= '[' VALUE* ']';
+	BOOLEAN ::= 'false' | 'true';
+	INTEGER ::= \d+;
+	FLOAT ::= \d+'.'\d+;
+	STRING ::= '\''.*'\'';
+	TABLE ::= '{' START '}';
+
+## Space-separation ##
+Space separation of the keys, symbols, and variables is chosen because it makes
+the code easy to write. It also removes the need for shady edge cases.
+
+## Simple Key-Value Pair ##
+	key 'value'
+
+Keys are always unique. Multiplicities are erroneous.
+
+## Types ##
+
+	key-one [ 1 2 3 'is an array' ]  # An array
+	key-two true  # A boolean
+	key-three 1  # An integer
+	key-four 3.14159  # A float
+	key-five 'value'  # A String
+	key-six {  # A table
+		sub-key 'value'
 	}
-	key.inside 'A key that is part of the key table'
 
-This allows you to specify keys inside tables.
+## Arrays ##
+Arrays can contain any value type. They are heterogeneous.
+Arrays can contain tables.
 
+	key [ [ true ] false 0 1e9 'value' { subkey 'other' } ]
+
+Space separation ensures correct behaviour.
+What about mixing text with other stuff?

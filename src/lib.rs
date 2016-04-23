@@ -93,7 +93,11 @@ impl<'a> Parser<'a> {
 		let begin = self.consume_until_non_whitespace();
 		if let Some(ch) = self.curchar {
 			match ch {
+				'0' ... '9' => {
+					// number();
+				}
 				'\'' => {
+					// Literal
 					println!("FOUND A SINGULAR QUOTE");
 				}
 				'{' => {
@@ -108,6 +112,14 @@ impl<'a> Parser<'a> {
 	fn parse_literal(&mut self) -> String {
 
 		"".into()
+	}
+
+	fn parse_apostrophe(&mut self) {
+		if let Some(ch) = self.curchar {
+			if ch == '\'' {
+
+			}
+		}
 	}
 
 }
