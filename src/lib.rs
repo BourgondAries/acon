@@ -136,6 +136,9 @@ fn test_value() {
 
 #[test]
 fn test_whitespace() {
+	if let x = 1 != 2 {
+		println!("E!Y");
+	}
 	let mut parser = Parser::new("Test d");
 	for _ in 1..50 {
 		assert_eq!(parser.consume_until_non_whitespace(), 0);
