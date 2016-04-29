@@ -1,24 +1,30 @@
 #! /usr/bin/awk -f
 
-BEGIN { comment = 0; current = 0; listn = 0; print "Beginning Parsing"; }
-$1 ~ /##/ { comment = comment == 1 ? 0 : 1; next; }
-// { if (comment == 1) { next; } }
-$1 ~ /#/ { next; }
-$1 ~ /list/ { ++listn; next; }
-$1 ~ /begin/ { list[current] = $2; ++current; next; }
-$1 ~ /end/ {
-	if (current == 0) {
+# key - The list of keys to this entry
+# ikey - The top index of the key
+# list - The list of array depths
+# ilist - The current top index of the list
+# com - Current comment
+BEGIN { comment = 0; ikey = 0; list = 0; }
+$1 ~ /\[/ { key[ikey]=$2; ++ikey; ilist[list]=ikey; ++list; key[ikey]=0; ++ikey;next;}
+$1 ~ /\]/ { --list;--ikey;next;}
+$1 ~ /{/ {key[ikey] = $2; ++ikey; next;}
+$1 ~ /}/ {
+	if (ikey == 0) {
 		print "Encountered end without matching begin" | "cat 1>&2";
 		exit 1;
 	}
-	--current;
+	--ikey;
 	next;
 }
-! $1 ~ /begin|end|list/ {
-	for (i = 0; i < current; ++i)
-		printf "%s.", list[i];
+// {
+	for (i = 0; i < ikey; ++i)
+		printf "%s.", key[i];
 	for (i = 1; i <= NF; ++i)
 		printf "%s ", $i;
 	printf "\n";
+	if (list-1 >= 0 && ilist[list-1] == ikey-1) {
+		++key[ikey-1];
+	}
 }
-END { print "Ending Parsing"; }
+END { print "Ending Parsing" | "cat 1>&2"; }
