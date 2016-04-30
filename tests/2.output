@@ -1,0 +1,18 @@
+widget.debug on
+widget.window.title Sample Konfabulator Widget
+widget.window.name main_window
+widget.window.width 500
+widget.window.height 500
+widget.image.src Images/Sun.png
+widget.image.name sun1
+widget.image.hOffset 250
+widget.image.vOffset 250
+widget.image.alignment center
+widget.text.data Click here
+widget.text.size 36
+widget.text.style bold
+widget.text.name text1
+widget.text.hOffset 250
+widget.text.vOffset 100
+widget.text.alignment center
+widget.text.onMouseUp sun1.opacity = (sun1.opacity / 100) * 90 ;
