@@ -5,7 +5,7 @@ test:
 	./test.sh
 
 parse:
-	./parse.awk example
+	./acon example
 
 doc:
 	pdflatex -output-directory temp report.tex

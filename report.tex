@@ -16,9 +16,9 @@
 	{-}{{-}}1
 }
 
-\title{Koml}
+\title{A General Line-Based Data Serialization Language}
 \author{Kevin Robert Stravers}
-\date{April 29th, 2016}
+\date{April 30th, 2016}
 
 \begin{document}
 
@@ -29,13 +29,13 @@
 	\lstlistoflistings
 \fi
 
-\chapter{Problems}
 \section{Introduction}
 This article will explore various markup and configuration languages and their flaws. A solution to the flaws is presented near the end.
+\section{Problems}
 
-\section{TOML}
+\subsection{TOML}
 TOML (Tom's Obvious Minimal Language) is a relatively new language that tries to be a specification of the 'ini' file.
-It tries to do this by heading a section with a name that specifies which table the following entries are part of.
+It tries to do this by heading a subsection with a name that specifies which table the following entries are part of.
 
 \begin{verbatim}
 [tablename]
@@ -75,7 +75,7 @@ otherkey = "value"
 
 It is redundant to state 'tablename.nestedtable'. Inline tables, due to the one-line limitation become ugly.
 
-\section{JSON}
+\subsection{JSON}
 JavaScript object notation is the object building notation used by the Javascript language.
 \begin{enumerate}
 	\item Non-trivial parsing
@@ -83,7 +83,7 @@ JavaScript object notation is the object building notation used by the Javascrip
 	\item Hard to read
 \end{enumerate}
 
-\section{XML}
+\subsection{XML}
 XML is an extendable and quite simple markup language. XML allows tags in table names.
 \begin{enumerate}
 	\item Non-trivial parsing
@@ -184,24 +184,6 @@ Problem: We can't write multiline strings.
 $\Rightarrow$ Solution: Use an array.
 
 \section{Grammar}
-
-\begin{verbatim}
-{ name
-	[ also-named
-		# Unnamed array
-		[
-			1 2 3 4
-			5 6 7 8
-		]
-		# Unnamed table
-		{
-			key value
-		}
-	]
-}
-\end{verbatim}
-
-\section{Grammar}
 The full grammar for the language is described here. All literals are in the form of PERL regexes.
 
 \begin{verbatim}
@@ -218,5 +200,28 @@ DATA ::= '[^\n]*\n';
 NMEM ::= name DATA | NARRAY | NENTRY;
 UMEM ::= DATA | ARRAY | ENTRY;
 \end{verbatim}
+
+\section{Realization}
+Tools are needed to make any data serialization language realizable.
+
+\begin{enumerate}
+	\item json2acon - A JSON to ACON converter. (Written in Rust, using Serde)
+	\item acon - An ACON expander. (Written in awk)
+\end{enumerate}
+
+Tools that have to be implemented:
+\begin{enumerate}
+	\item xml2acon - An XML to ACON converter.
+	\item acon2xml - An ACON to XML converter.
+	\item acon2json - An ACON to JSON converter.
+	\item acon - An ACON expander. (Written in awk)
+\end{enumerate}
+
+
+\lstlistoflistings
+
+\lstinputlisting[caption={json2acon, converts JSON to ACON},breaklines=true,frame=single,language=c++]{src/main.rs}
+\lstinputlisting[caption={acon, converting ACON to line-based ACON},breaklines=true,frame=single,language=awk]{acon}
+
 
 \end{document}
