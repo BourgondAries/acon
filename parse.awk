@@ -15,7 +15,7 @@ function printUnitTitle() { if (lists <= 0 || lists > 0 && isInArray() == 0) { i
 $1 ~ /{/ { pushPath($2); next; }
 $1 ~ /}/ { popPath(); next; }
 $1 ~ /\[/ { pushPath($2); pushPath(0); pushList(paths); next; }
-$1 ~ /\]/ { popPath(); popPath(); popList(); next; }
+$1 ~ /\]/ { popPath(); popPath(); popList(); incrementIfInList(); next; }
 // {
 	printPath();
 	printUnitTitle();
