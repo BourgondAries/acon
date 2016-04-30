@@ -17,6 +17,7 @@ $1 ~ /}/ { popPath(); incrementIfInList(); next; }
 $1 ~ /\[/ { pushPath($2); pushPath(0); pushList(paths); next; }
 $1 ~ /\]/ { popPath(); popPath(); popList(); incrementIfInList(); next; }
 // {
+	if (NF == 0) { next; }
 	printPath();
 	printUnitTitle();
 	printElements((isInArray() == 0) + 1);
