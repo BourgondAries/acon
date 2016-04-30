@@ -5,6 +5,7 @@
 \usepackage{caption}
 \usepackage{varwidth}
 \usepackage{verbatimbox}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{natbib}
@@ -39,32 +40,42 @@
 \noindent TOML (Tom's Obvious Minimal Language) is a relatively new language that tries to be a specification of the 'ini' file.
 It tries to do this by heading a subsection with a name that specifies which table the following entries are part of.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 [group1]
 key1 = "value1"
 key2 = "value2"
 \end{verbatim}
-
-\begin{figure}[!htb]
-\centering
-\begin{varwidth}{\linewidth}
 \end{varwidth}
-\caption{C++ code}
+\caption{}
 \end{figure}
 
 \noindent Nested tables are fine in TOML:
 
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 [group1.group2]
 key1 = "value1"
 key2 = "value2"
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent TOML is a good choice for simple configuration, but there are a few scalability problems.
 
 
 \noindent The problem with stating the complete path is that we get issues like the following:
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 [group1.group1]
 key1 = "value1"
@@ -76,6 +87,9 @@ key2 = "value2"
 key1 = "value1"
 key2 = "value2"
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent It is redundant to state 'group1'. This can be done using inline tables. This is ugly due to the one-line limitation.
 
@@ -90,15 +104,26 @@ key2 = "value2"
 \subsection{JSON}
 \noindent JavaScript object notation is the object building notation used by the Javascript language.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 { "group1": {
   "key1": "value1",
   "key2": "value2"
 }}
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent JSON can be used to build arbitrary structures easily.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 { "group1": {
   "group1": {
@@ -115,6 +140,9 @@ key2 = "value2"
   }
 }}
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \begin{enumerate}
   \item Non-trivial parsing
@@ -127,15 +155,26 @@ key2 = "value2"
 \subsection{XML}
 \noindent XML is an extendable and quite simple markup language. XML allows tags in table names.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 <group1>
   <key1>value1</key1>
   <key2>value2</key2>
 </group1>
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent The language also allows one to nest tables. Although it is unclear where tags are necessary.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 <group1>
   <group1>
@@ -152,14 +191,24 @@ key2 = "value2"
   </group3>
 </group1>
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent XML allows one to give data as either an element or attribute.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 <key attribute="value">
   <element></element>
 </key>
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent There are numerous problems with this format.
 
@@ -179,14 +228,25 @@ key2 = "value2"
 \noindent Problem: None of the above solutions are remotely trivial to parse. \\
 $\Rightarrow$ To solve the above problems, we first need trivial parsing. This is done by making the language line-based and simple-delimiter separated.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 key1 value1
 key2 value2
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent Problem: We need a way to group items together. \\
 $\Rightarrow$ use dots as separators.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 group1.key1 value1
 group1.key2 value2
@@ -194,16 +254,26 @@ group1.key2 value2
 group2.key1 value1
 group2.key2 value2
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent Problem: We want to be able to group items together with a common prefix without stating the names all the time. \\
 $\Rightarrow$ use tables.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 table group1
   key1 value1
   key2 value2
 end
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent This is trivial to parse using awk.
 
@@ -216,12 +286,19 @@ $\Rightarrow$ Solution: use (K). \\
 Problem: table/end don't have matching tags in edits. \\
 $\Rightarrow$ Solution: use \lbrack and \rbrack or \{ and \}. Editors match these nicely.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 { group1
   key1 value1
   key2 value2
 }
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \noindent Problem: Using (), \lbrack \rbrack, or \{\} in text causes the editor to not display correctly. \\
 $\Rightarrow$ Solution: Use escape codes: (o), (p), (Bb), (Bd), (B7), (B9). \\
@@ -231,6 +308,10 @@ $\Rightarrow$ Solution: Use an array.
 \section{Grammar}
 \noindent The full grammar for the language is described here. All literals are in the form of PERL regexes.
 
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
 \begin{verbatim}
 START ::= { NMEM }*;
 
@@ -245,6 +326,9 @@ DATA ::= '[^\n]*\n';
 NMEM ::= name DATA | NARRAY | NENTRY;
 UMEM ::= DATA | ARRAY | ENTRY;
 \end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \section{Realization}
 \noindent Tools are needed to make any data serialization language realizable.
