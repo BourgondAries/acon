@@ -10,24 +10,30 @@ use std::io::Read;
 use serde_json::value::Value;
 
 fn main() {
+	match env_logger::init() {
+		Ok(_) => {}
+		Err(_) => {
+			println!("Env logger was already initialized");
+		}
+	}
 	let mut string = String::new();
 	let stdin = std::io::stdin();
 	let mut stdin = stdin.lock();
 	match stdin.read_to_string(&mut string) {
-		Ok(_) => trace!("Read input"),
+		Ok(bytes) => trace!("Read {} bytes", bytes),
 		Err(err) => {
 			error!("Unable to read from standard input, aborting, {}", err);
 			panic!();
 		}
 	}
-	let map: BTreeMap<String, Value> = match serde_json::from_str(&string) {
+	let map: Value = match serde_json::from_str(&string) {
 		Ok(map) => map,
 		Err(err) => {
 			error!("{:?}", err);
 			panic!();
 		}
 	};
-	print(&map, 0);
+	print_simple(&map, 0);
 }
 
 
@@ -73,12 +79,11 @@ fn print_simple(value: &Value, level: usize) {
 		}
 	}
 }
+
 fn print(map: &BTreeMap<String, Value>, level: usize) {
 	for (key, value) in map {
 		match *value {
-			Value::Null => {
-				println!("{}{} {}", tabs(level), key, "null");
-			}
+			Value::Null => { println!("{}{} {}", tabs(level), key, "null"); }
 			Value::Bool(value) => {
 				println!("{}{} {}", tabs(level), key, if value { "true" } else { "false" });
 			}
