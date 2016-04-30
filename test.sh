@@ -1,9 +1,13 @@
 #! /bin/bash
 
+if ! [ -d temp ]; then
+	mkdir temp
+fi
 successes=0
 failures=0
 for i in tests/*.input; do
 	out="${i%.input}".output
+	out=temp/"${out#tests/}"
 	./parse.awk "$i" > "$out"
 	if ! diff "${i%.input}.correct" "$out"; then
 		echo -e "\e[31mFailure for $i\e[0m"
