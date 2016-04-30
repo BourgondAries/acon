@@ -80,7 +80,7 @@ fn print(map: &BTreeMap<String, Value>, level: usize) {
 				println!("{}{} {}", tabs(level), key, "null");
 			}
 			Value::Bool(value) => {
-				println!("{}{} {}", tabs(level), key, value);
+				println!("{}{} {}", tabs(level), key, if value { "true" } else { "false" });
 			}
 			Value::I64(value) => {
 				println!("{}{} {}", tabs(level), key, value);
