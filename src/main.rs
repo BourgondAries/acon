@@ -33,7 +33,7 @@ fn main() {
 			panic!();
 		}
 	};
-	print_simple(&map, 0);
+	print_value(&map, 0);
 }
 
 
@@ -45,7 +45,13 @@ fn tabs(level: usize) -> String {
 	string
 }
 
-fn print_simple(value: &Value, level: usize) {
+fn escape(string: &str) -> String {
+	string
+		.replace("\n", "\\n")
+		.replace("\t", "\\t")
+}
+
+fn print_value(value: &Value, level: usize) {
 	match *value {
 		Value::Null => {
 			println!("{}{}", tabs(level), "null");
@@ -63,12 +69,12 @@ fn print_simple(value: &Value, level: usize) {
 			println!("{}{}", tabs(level), value);
 		}
 		Value::String(ref string) => {
-			println!("{}{}", tabs(level), string);
+			println!("{}{}", tabs(level), escape(string));
 		}
 		Value::Array(ref array) => {
 			println!("{}{}", tabs(level), '[');
 			for i in array {
-				print_simple(i, level + 1);
+				print_value(i, level + 1);
 			}
 			println!("{}{}", tabs(level), ']');
 		}
@@ -97,12 +103,12 @@ fn print(map: &BTreeMap<String, Value>, level: usize) {
 				println!("{}{} {}", tabs(level), key, value);
 			}
 			Value::String(ref string) => {
-				println!("{}{} {}", tabs(level), key, string);
+				println!("{}{} {}", tabs(level), key, escape(string));
 			}
 			Value::Array(ref array) => {
 				println!("{}{} {}", tabs(level), '[', key);
 				for i in array {
-					print_simple(i, level + 1);
+					print_value(i, level + 1);
 				}
 				println!("{}{}", tabs(level), ']');
 			}
