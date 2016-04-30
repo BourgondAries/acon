@@ -1,3 +1,6 @@
+json2acon:
+	cargo build
+	cat example | ./target/debug/json2acon
 test:
 	./test.sh
 
