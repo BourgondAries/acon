@@ -3,6 +3,8 @@
 \usepackage[a4paper, total={7in, 10in}]{geometry}
 \usepackage{breqn}
 \usepackage{caption}
+\usepackage{varwidth}
+\usepackage{verbatimbox}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{natbib}
@@ -25,166 +27,209 @@
 \maketitle
 
 \iffalse
-	\tableofcontents
-	\lstlistoflistings
+  \tableofcontents
+  \lstlistoflistings
 \fi
 
 \section{Introduction}
-This article will explore various markup and configuration languages and their flaws. A solution to the flaws is presented near the end.
-\section{Problems}
+\noindent This article will explore various markup and configuration languages and their flaws. A solution to the flaws is presented near the end.
 
+\section{Problems}
 \subsection{TOML}
-TOML (Tom's Obvious Minimal Language) is a relatively new language that tries to be a specification of the 'ini' file.
+\noindent TOML (Tom's Obvious Minimal Language) is a relatively new language that tries to be a specification of the 'ini' file.
 It tries to do this by heading a subsection with a name that specifies which table the following entries are part of.
 
 \begin{verbatim}
-[tablename]
-key = "value"
-otherkey = "value"
+[group1]
+key1 = "value1"
+key2 = "value2"
 \end{verbatim}
 
-Nested tables are fine in TOML:
+\begin{figure}[!htb]
+\centering
+\begin{varwidth}{\linewidth}
+\end{varwidth}
+\caption{C++ code}
+\end{figure}
+
+\noindent Nested tables are fine in TOML:
 
 \begin{verbatim}
-[tablename.nestedtable]
-key = "value"
-otherkey = "value"
+[group1.group2]
+key1 = "value1"
+key2 = "value2"
 \end{verbatim}
 
-TOML is a good choice for simple configuration, but there are a few scalability problems.
+\noindent TOML is a good choice for simple configuration, but there are a few scalability problems.
+
+
+\noindent The problem with stating the complete path is that we get issues like the following:
+
+\begin{verbatim}
+[group1.group1]
+key1 = "value1"
+key2 = "value2"
+[group1.group2]
+key1 = "value1"
+key2 = "value2"
+[group1.group3]
+key1 = "value1"
+key2 = "value2"
+\end{verbatim}
+
+\noindent It is redundant to state 'group1'. This can be done using inline tables. This is ugly due to the one-line limitation.
 
 \begin{enumerate}
-	\item Non-trivial parsing
-	\item Inline tables are limited to one line
-	\item Need to state the complete path for multiple tables
+  \item Non-trivial parsing
+  \item Inline tables are limited to one line
+  \item Need to state the complete path for multiple nested tables
+  \item Large standard because dates are included (RFC3339)
+  \item Not friendly for line-based tools
 \end{enumerate}
 
-The problem with stating the complete path is that we get issues like the following:
+\subsection{JSON}
+\noindent JavaScript object notation is the object building notation used by the Javascript language.
 
 \begin{verbatim}
-[tablename.nestedtable]
-key = "value"
-otherkey = "value"
-[tablename.nestedtable.x]
-key = "value"
-otherkey = "value"
-[tablename.nestedtable.y]
-key = "value"
-otherkey = "value"
+{ "group1": {
+  "key1": "value1",
+  "key2": "value2"
+}}
 \end{verbatim}
 
-It is redundant to state 'tablename.nestedtable'. Inline tables, due to the one-line limitation become ugly.
+\noindent JSON can be used to build arbitrary structures easily.
 
-\subsection{JSON}
-JavaScript object notation is the object building notation used by the Javascript language.
+\begin{verbatim}
+{ "group1": {
+  "group1": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "group2": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "group3": {
+    "key1": "value1",
+    "key2": "value2"
+  }
+}}
+\end{verbatim}
+
 \begin{enumerate}
-	\item Non-trivial parsing
-	\item Liberal use of quotation marks
-	\item Hard to read
+  \item Non-trivial parsing
+  \item Liberal use of quotation marks
+  \item Hard to read
+  \item Required commas to separate items
+  \item Not friendly for line-based tools
 \end{enumerate}
 
 \subsection{XML}
-XML is an extendable and quite simple markup language. XML allows tags in table names.
+\noindent XML is an extendable and quite simple markup language. XML allows tags in table names.
+
+\begin{verbatim}
+<group1>
+  <key1>value1</key1>
+  <key2>value2</key2>
+</group1>
+\end{verbatim}
+
+\noindent The language also allows one to nest tables. Although it is unclear where tags are necessary.
+
+\begin{verbatim}
+<group1>
+  <group1>
+    <key1>value1</key1>
+    <key2>value2</key2>
+  </group1>
+  <group2>
+    <key1>value1</key1>
+    <key2>value2</key2>
+  </group1>
+  <group3>
+    <key1>value1</key1>
+    <key2>value2</key2>
+  </group3>
+</group1>
+\end{verbatim}
+
+\noindent XML allows one to give data as either an element or attribute.
+
+\begin{verbatim}
+<key attribute="value">
+  <element></element>
+</key>
+\end{verbatim}
+
+\noindent There are numerous problems with this format.
+
 \begin{enumerate}
-	\item Non-trivial parsing
-	\item Verbose tag symbols
-	\item Hard to process by a text processor
-	\item Overly complicated escaping
+  \item Unclear convention for using elements or attributes
+  \item No native arrays
+  \item Non-trivial parsing
+  \item Verbose tag symbols
+  \item Closing symbols contain redundant data
+  \item Little room for variables that need to be without spaces
+  \item Hard to process by a text processor
+  \item Overly complicated escaping
+  \item Not friendly for line-based tools
 \end{enumerate}
 
 \section{Solution}
-1. To solve the above problems, we first need trivial parsing. This is done by making the language line-based and simple-delimiter separated.
+\noindent Problem: None of the above solutions are remotely trivial to parse. \\
+$\Rightarrow$ To solve the above problems, we first need trivial parsing. This is done by making the language line-based and simple-delimiter separated.
 
 \begin{verbatim}
-tablename.nestedtable.key value
-tablename.nestedtable.otherkey value
-tablename.nestedtable.x.key value
-tablename.nestedtable.x.otherkey value
-tablename.nestedtable.y.key value
-tablename.nestedtable.y.otherkey value
+key1 value1
+key2 value2
 \end{verbatim}
 
-2. We have only one line, so there's nothing we can do.
-3. Stating the complete path is redundant. We implement a simple substitution.
+\noindent Problem: We need a way to group items together. \\
+$\Rightarrow$ use dots as separators.
 
 \begin{verbatim}
-tablename.nestedtable.key value
-                      otherkey value
-                      x.key value
-                      x.otherkey value
-                      y.key value
-                      y.otherkey value
+group1.key1 value1
+group1.key2 value2
+
+group2.key1 value1
+group2.key2 value2
 \end{verbatim}
 
-
-Note the spaces. The algorithm for manipulating this can store the previous key. Whenever a leading space is
-encountered, the original character can be used instead. This scales with any number of nestings.
-
-New problem: If I change the table name, then I need to remove many spaces. Can this be solved?\\
-$\Rightarrow$ Solution: a tool can be used for this. It parses it into a tree, you change a name, and it outputs it. Note that the actual text is still easy to process.\\
-New problem: how are values differentiated from keys if spaces are used?\\
-$\Rightarrow$ Solution: use '=' or ':'.\\
-New problem: the spaces can be quite long and take up a lot of space.\\
-$\Rightarrow$ Solution denote the beginning of a table and its end.\\
+\noindent Problem: We want to be able to group items together with a common prefix without stating the names all the time. \\
+$\Rightarrow$ use tables.
 
 \begin{verbatim}
-begin tablename.nestedtable.key
-	otherkey value
-	x.key value
-	x.otherkey value
-	y.key value
-	y.otherkey value
+table group1
+  key1 value1
+  key2 value2
 end
 \end{verbatim}
 
-Every 'begin' can be put into a list. List can be put into a table.
-This is trivial to parse using awk.
+\noindent This is trivial to parse using awk.
 
-Problem: Spaces are field separators, what if we don't want to separate a field?\\
-$\Rightarrow$ Solution: use \textbackslash s.
-Problem: What if we want a new line in our output.
-$\Rightarrow$ Solution: use \textbackslash n.
-Problem: What if we want a new line in our output.
-$\Rightarrow$ Solution: use \textbackslash n.
-Problem: begin/end don't have matching tags in edits.
-$\Rightarrow$ Solution: use [ and ] or { and }.
+\noindent Problem: What escaping convention should be used? \\
+$\Rightarrow$ Solution: use base64 codes within parentheses.
+Problem: Spaces are field separators, what if we don't want to separate a field? \\
+$\Rightarrow$ Solution: use (g). \\
+Problem: What if we want a new line in our output. \\
+$\Rightarrow$ Solution: use (K). \\
+Problem: table/end don't have matching tags in edits. \\
+$\Rightarrow$ Solution: use \lbrack and \rbrack or \{ and \}. Editors match these nicely.
 
 \begin{verbatim}
-{ glossary
-  title example glossary
-  { GlossDiv
-    title S
-    { GlossList
-      { GlossEntry
-        ID SGML
-        SortAs SGML
-        GlossTerm Standard Generalized Markup Language
-        Acronym SGML
-        Abbrev ISO 8879:1986
-        { GlossDef
-          para A meta-markup language, used to create markup languages such as DocBook.
-          [ GlossSeeAlso
-            GML
-            XML
-          ]
-          GlossSee markup
-        }
-      }
-    }
-  }
+{ group1
+  key1 value1
+  key2 value2
 }
 \end{verbatim}
 
-Problem: Using \lbrack \rbrack or \{\} in text causes the editor to not display correctly.\\
-$\Rightarrow$ Solution: Use escape codes.
-
-What escape codes should be used then?
-
-Problem: We can't write multiline strings.
+\noindent Problem: Using (), \lbrack \rbrack, or \{\} in text causes the editor to not display correctly. \\
+$\Rightarrow$ Solution: Use escape codes: (o), (p), (Bb), (Bd), (B7), (B9). \\
+\noindent Problem: We can't write multiline strings. \\
 $\Rightarrow$ Solution: Use an array.
 
 \section{Grammar}
-The full grammar for the language is described here. All literals are in the form of PERL regexes.
+\noindent The full grammar for the language is described here. All literals are in the form of PERL regexes.
 
 \begin{verbatim}
 START ::= { NMEM }*;
@@ -202,19 +247,19 @@ UMEM ::= DATA | ARRAY | ENTRY;
 \end{verbatim}
 
 \section{Realization}
-Tools are needed to make any data serialization language realizable.
+\noindent Tools are needed to make any data serialization language realizable.
 
 \begin{enumerate}
-	\item json2acon - A JSON to ACON converter. (Written in Rust, using Serde)
-	\item acon - An ACON expander. (Written in awk)
+  \item json2acon - A JSON to ACON converter. (Written in Rust, using Serde)
+  \item acon - An ACON expander. (Written in awk)
 \end{enumerate}
 
-Tools that have to be implemented:
+\noindent Tools that have to be implemented:
 \begin{enumerate}
-	\item xml2acon - An XML to ACON converter.
-	\item acon2xml - An ACON to XML converter.
-	\item acon2json - An ACON to JSON converter.
-	\item acon - An ACON expander. (Written in awk)
+  \item xml2acon - An XML to ACON converter.
+  \item acon2xml - An ACON to XML converter.
+  \item acon2json - An ACON to JSON converter.
+  \item acon - An ACON expander. (Written in awk)
 \end{enumerate}
 
 
