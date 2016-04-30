@@ -278,7 +278,7 @@ end
 \noindent This is trivial to parse using awk.
 
 \noindent Problem: What escaping convention should be used? \\
-$\Rightarrow$ Solution: use base64 codes within parentheses.
+$\Rightarrow$ Solution: use base64 codes within parentheses. \\
 Problem: Spaces are field separators, what if we don't want to separate a field? \\
 $\Rightarrow$ Solution: use (g). \\
 Problem: What if we want a new line in our output. \\
@@ -303,7 +303,49 @@ $\Rightarrow$ Solution: use \lbrack and \rbrack or \{ and \}. Editors match thes
 \noindent Problem: Using (), \lbrack \rbrack, or \{\} in text causes the editor to not display correctly. \\
 $\Rightarrow$ Solution: Use escape codes: (o), (p), (Bb), (Bd), (B7), (B9). \\
 \noindent Problem: We can't write multiline strings. \\
-$\Rightarrow$ Solution: Use an array.
+$\Rightarrow$ Solution: Use an array. \\
+\noindent Problem: It's unclear when whitespace is included in the value.
+$\Rightarrow$ Solution: every field gets space-separated. If you want to insert
+whitespace on its on, you can use (g) for spaces, (K) for newlines.
+
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
+{ group1
+  key1 (g)Here we force a space in the beginning
+  key2 value2
+}
+\end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
+
+\textit{Pro:} This format allows easily formatted, conventional text:
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
+{ mail
+  [ message
+    This is my message to you.
+    The message can contain many lines.
+    As you may know, each line is its own variable.
+    However, the program decides how to process
+    each line! This makes it possible to write simple,
+    space-separated text easily.
+
+    Teksten kan være i flere språk. Det er lovlig.
+  ]
+}
+\end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
+
+\noindent The above will not include the tabs or spaces that are used to indent the format. This makes it ideal for raw string messages.
 
 \section{Grammar}
 \noindent The full grammar for the language is described here. All literals are in the form of PERL regexes.
