@@ -1,6 +1,6 @@
 #! /usr/bin/awk -f
 
-BEGIN { paths = 0; lists = 0; printf "Beginning Parsing" | "cat 1>&2"; }
+BEGIN { paths = 0; lists = 0; }
 function printElements(start) { for (i = start; i <= NF; ++i) printf " %s", $i; }
 function isInArray() { return lists > 0 && topList() == paths; }
 function printPath() { for (i = 0; i < paths - 1; ++i) if (path[i] != "") { printf "%s.", path[i]; } if (path[paths - 1] != "") printf "%s", path[paths - 1]; }
@@ -23,4 +23,3 @@ $1 ~ /\]/ { popPath(); popPath(); popList(); incrementIfInList(); next; }
 	printf "\n";
 	incrementIfInList();
 }
-END { print "Ending Parsing" | "cat 1>&2"; }
