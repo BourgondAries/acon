@@ -345,7 +345,75 @@ whitespace on its on, you can use (g) for spaces, (K) for newlines.
 \caption{}
 \end{figure}
 
-\noindent The above will not include the tabs or spaces that are used to indent the format. This makes it ideal for raw string messages.
+\noindent The above will not include the tabs or spaces that are used to indent the format. This makes it ideal for raw string messages. New lines are will be new lines inside arrays. This is useful when formatting. The system is text-based and has no verification of data.
+The program at hand will need to verify its own data.
+
+
+\subsection{Meaning of Named Tables and Arrays inside Arrays}
+\noindent The meaning of names tables and named arrays inside arrays is to prevent verbosity. \\
+\noindent First let's explore what named tables and arrays are:
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
+{ table-name
+}
+[ array-name
+]
+\end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
+
+An unnamed table and array:
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
+{
+}
+[
+]
+\end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
+
+The meaning of named arrays and tables inside arrays (as, normally, elements in an array are not named.) is to automatically put the element in an unnamed table:
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
+[ array-name
+  { table-name
+    key value
+  }
+]
+\end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
+
+Is the same as
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
+[ array-name
+  {
+    { table-name
+      key value
+    }
+  }
+]
+\end{verbatim}
+\end{varwidth}
+\caption{}
+\end{figure}
 
 \section{Grammar}
 \noindent The full grammar for the language is described here. All literals are in the form of PERL regexes.
