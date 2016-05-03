@@ -1,0 +1,19 @@
+#! /usr/bin/awk -f
+
+BEGIN { paths = 0; lists = 0; }
+function printElements(start) { for (i = start; i <= NF - 1; ++i) printf "%s ", $i; printf "%s", $NF; }
+function isInArray() { return lists > 0 && topList() == paths; }
+function printPath() { for (i = 0; i < paths - 1; ++i) if (path[i] != "") { printf "%s.", path[i]; } if (paths > 0 && path[paths - 1] != "") printf "%s", path[paths - 1]; }
+function pushPath(argument) { path[paths] = argument; ++paths; }
+function popPath() { if (paths <= 0) { printf "Can not pop path, already empty" | "cat 1>&2"; exit 1; } else { --paths; return path[paths]; }}
+function pushList(argument) { list[lists] = argument; ++lists; }
+function popList() { if (lists <= 0) { printf "Can not pop list, already empty" | "cat 1>&2"; exit 1; } else { --lists; return list[lists]; }}
+function topList() { if (lists <= 0) { printf "Can not get top element, list is empty" | "cat 1>&2"; exit 1; } else { return list[lists - 1]; }}
+function incrementIfInList() { if (lists > 0 && paths == list[lists - 1]) ++path[paths - 1]; }
+function isNamed() { if (paths == 0 || path[paths - 1] == "") return ""; else return "."; }
+function printUnitTitle() { if (lists <= 0 || lists > 0 && isInArray() == 0) { if ($1 != "") printf "%s%s", isNamed(), $1; } }
+$1 ~ /{/ { if ($2 == "") $2 = "table"; pushPath($2); printf "<%s>\n", $2; next; }
+$1 ~ /}/ { printf "</%s>\n", popPath(); incrementIfInList(); next; }
+$1 ~ /\[/ { pushPath($2); printf "<%s>\n", $2; pushPath(0); pushList(paths); next; }
+$1 ~ /\]/ { popPath(); printf "</%s>\n", popPath(); popList(); incrementIfInList(); next; }
+// { if (NF == 0) { next; } else { if (isInArray()) { printf "<value>%s</value>\n", $0; } else { printf "<%s>", $1; printElements(2); printf "</%s>\n", $1; } } }
