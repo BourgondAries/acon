@@ -441,16 +441,13 @@ Is the same as
 \begin{verbatim}
 START ::= { NMEM }*;
 
-NARRAY ::= ws '[' ws name '\n' { UMEM }* ']';
-NENTRY ::= ws '{' ws name '\n' { NMEM }* '}';
-
-ARRAY ::= ws '[' '\n' { UMEM }* ']';
-ENTRY ::= ws '{' '\n' { NMEM }* '}';
+ARRAY ::= ws '[' [ ws name ] '\n' { UMEM }* ']';
+ENTRY ::= ws '{' [ ws name ] '\n' { NMEM }* '}';
 
 ws ::= '[\t ]*';
 name ::= '[^\n]+';
 DATA ::= '[^\n]*\n';
-NMEM ::= ws name DATA | NARRAY | NENTRY;
+NMEM ::= ws name DATA | ARRAY | ENTRY;
 UMEM ::= ws DATA | ARRAY | ENTRY;
 
 \end{verbatim}
