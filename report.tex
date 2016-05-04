@@ -21,7 +21,7 @@
 
 \title{A General Line-Based Data Serialization Language}
 \author{Kevin Robert Stravers}
-\date{April 30th, 2016}
+\date{May 4th, 2016}
 
 \begin{document}
 
@@ -37,7 +37,7 @@
 
 \section{Problems}
 \subsection{TOML}
-\noindent TOML (Tom's Obvious Minimal Language) is a relatively new language that tries to be a specification of the 'ini' file.
+\noindent TOML (Tom's Obvious Minimal Language) is a relatively new language that tries to be a specification of the 'ini' file. Toml allows comments to be embedded.
 It tries to do this by heading a subsection with a name that specifies which table the following entries are part of.
 
 
@@ -346,8 +346,16 @@ whitespace on its on, you can use (g) for spaces, (K) for newlines.
 \end{figure}
 
 \noindent The above will not include the tabs or spaces that are used to indent the format. This makes it ideal for raw string messages. New lines are will be new lines inside arrays. This is useful when formatting. The system is text-based and has no verification of data.
-The program at hand will need to verify its own data.
+The program at hand will need to verify its own data. \\
 
+\noindent Problem: The code can sometimes require a comment. How is this implemented? \\
+\noindent $\Rightarrow$ Solution: A line starting with a '\#' literal is a comment and is skipped. \\
+
+\noindent Problem: We sometimes want a dot in the table names, but they're used in separators. \\
+\noindent $\Rightarrow$ Solution: Use the (u) escape code. \\
+
+\noindent Problem: We sometimes want the \# at the beginning of a line without considering it a comment. \\
+\noindent $\Rightarrow$ Solution: Use the (j) escape code. \\
 
 \subsection{Meaning of Named Tables and Arrays inside Arrays}
 \noindent The meaning of names tables and named arrays inside arrays is to prevent verbosity. \\
