@@ -444,11 +444,11 @@ START ::= { NMEM }*;
 ARRAY ::= ws '[' [ ws name ] '\n' { UMEM }* ']';
 ENTRY ::= ws '{' [ ws name ] '\n' { NMEM }* '}';
 
-ws ::= '[\t ]*';
+ws ::= '[\t ]+';
 name ::= '[^\n]+';
 DATA ::= '[^\n]*\n';
-NMEM ::= ws name DATA | ARRAY | ENTRY;
-UMEM ::= ws DATA | ARRAY | ENTRY;
+NMEM ::= [ ws ] name DATA | ARRAY | ENTRY;
+UMEM ::= [ ws ] DATA | ARRAY | ENTRY;
 
 \end{verbatim}
 \end{varwidth}
@@ -461,6 +461,7 @@ UMEM ::= ws DATA | ARRAY | ENTRY;
 \begin{enumerate}
   \item json2acon - A JSON to ACON converter. (Written in Rust, using Serde)
   \item acon - An ACON expander. (Written in awk)
+	\item getall - Gets all entries given a pattern of the first entry.
 \end{enumerate}
 
 \noindent Tools that have to be implemented:
@@ -475,7 +476,7 @@ UMEM ::= ws DATA | ARRAY | ENTRY;
 \lstlistoflistings
 
 \lstinputlisting[caption={json2acon, converts JSON to ACON},breaklines=true,frame=single,language=c++]{src/main.rs}
-\lstinputlisting[caption={acon, converting ACON to line-based ACON},breaklines=true,frame=single,language=awk]{acon}
+\lstinputlisting[caption={acon, converting ACON to line-based ACON, and optionally filtering keys},breaklines=true,frame=single,language=awk]{acon}
 
 
 \end{document}
