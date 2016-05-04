@@ -1,0 +1,3 @@
+#! /bin/bash
+
+cat - | awk -v pattern="$1" -f ./getall.awk
