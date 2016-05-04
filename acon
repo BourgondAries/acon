@@ -12,6 +12,7 @@ function topList() { if (lists <= 0) { printf "Can not get top element, list is 
 function incrementIfInList() { if (lists > 0 && paths == list[lists - 1]) ++path[paths - 1]; }
 function isNamed() { if (paths == 0 || path[paths - 1] == "") return ""; else return "."; }
 function printUnitTitle() { if (lists <= 0 || lists > 0 && isInArray() == 0) { if ($1 != "") printf "%s%s", isNamed(), $1; } }
+$1 ~ /#/ { next; }
 $1 ~ /{/ { pushPath($2); next; }
 $1 ~ /}/ { popPath(); incrementIfInList(); next; }
 $1 ~ /\[/ { pushPath($2); pushPath(0); pushList(paths); next; }
