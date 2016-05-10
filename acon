@@ -1,3 +1,11 @@
-#! /bin/bash
+#! /bin/bash -e
 
-cat - | awk -f acon.awk | awk -v pattern="$1" '$1 ~ pattern { print; }'
+old="$(pwd)"
+cd "${BASH_SOURCE[0]%/*}"
+acon_src="$(readlink ""${BASH_SOURCE[0]}"")"
+acon_src="${acon_src%/acon}"
+cd "$acon_src"
+acon_src="$(pwd)"
+cd "$old"
+
+awk -f "$acon_src"/acon.awk | awk -v pattern="$1" '$1 ~ pattern { print; }'
