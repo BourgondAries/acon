@@ -1,0 +1,8 @@
+{
+    version 0.1.2
+    message hello world
+    [ an-array
+        1 2 3 4
+        this is the second element in the array
+    ]
+}

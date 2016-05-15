@@ -3,7 +3,7 @@
 BEGIN { paths = 0; lists = 0; }
 function printElements(start) { for (i = start; i <= NF; ++i) printf " %s", $i; }
 function isInArray() { return lists > 0 && topList() == paths; }
-function printPath() { for (i = 0; i < paths - 1; ++i) if (path[i] != "") { printf "%s.", path[i]; } if (paths > 0 && path[paths - 1] != "") printf "%s", path[paths - 1]; }
+function printPath() { for (i = 0; i < paths - 1; ++i) { printf "%s.", path[i]; } if (paths > 0 && path[paths - 1] != "") printf "%s", path[paths - 1]; }
 function pushPath(argument) { path[paths] = argument; ++paths; }
 function popPath() { if (paths <= 0) { printf "Can not pop path, already empty" | "cat 1>&2"; exit 1; } else { --paths; return path[paths]; }}
 function pushList(argument) { list[lists] = argument; ++lists; }
