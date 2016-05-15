@@ -8,7 +8,7 @@ failures=0
 for i in tests/*.input; do
 	out="${i%.input}".output
 	out=temp/"${out#tests/}"
-	cat "$i" | ./acon > "$out"
+	cat "$i" | ./acon.awk > "$out"
 	if ! diff "${i%.input}.correct" "$out"; then
 		echo -e "\e[31mFailure for $i\e[0m"
 		: $((++failures))
