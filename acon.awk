@@ -15,9 +15,9 @@ function printUnitTitle() { if (lists <= 0 || lists > 0 && isInArray() == 0) { i
 function printPath() { for (i = 0; i < paths - 1; ++i) { if (path[i] != ".") printf "%s.", path[i]; } if (paths > 0 && path[paths - 1] != ".") printf "%s", path[paths - 1]; }
 
 $1 ~ /#/ { next; }
-$1 ~ /{/ { pushPath(isInArray() ? "." : $2); next; }
+$1 ~ /{/ { pushPath(isInArray() && $2 == "" ? "." : $2); next; }
 $1 ~ /}/ { popPath(); incrementIfInList(); next; }
-$1 ~ /\[/ { pushPath(isInArray() ? "." : $2); pushPath(0); pushList(paths); next; }
+$1 ~ /\[/ { pushPath(isInArray() && $2 == "" ? "." : $2); pushPath(0); pushList(paths); next; }
 $1 ~ /\]/ { popPath(); popPath(); popList(); incrementIfInList(); next; }
 $1 ~ /\$/ { paths = 0; lists = 0; next; }
 // { if (NF == 0) { if (isInArray()) { printPath(); incrementIfInList(); printf "\n";} next; } else { printPath(); printUnitTitle(); printElements((isInArray() == 0) + 1); printf "\n"; incrementIfInList(); } }
