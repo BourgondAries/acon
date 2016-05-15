@@ -6,7 +6,7 @@ An Awk-compatible markup language.
 
 Awk processes line-by-line. Awk scripts are easy to translate to other languages. The language is simple to process. This command line util can search for a regular expression as a path.
 
-	{  # indents increase
+	{
 		version 0.1.2
 		message "hello world"
 		an-array
