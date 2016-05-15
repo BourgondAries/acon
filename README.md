@@ -6,15 +6,18 @@ An Awk-compatible markup language.
 
 Awk processes line-by-line. Awk scripts are easy to translate to other languages. The language is simple to process. This command line util can search for a regular expression as a path.
 
+Here is an example.
+
 	{
 		version 0.1.2
 		message "hello world"
-		an-array
-		[
+		[ an-array
 			1 2 3 4
 			this is the second element in the array
 		]
 	}
+
+The path to the second element in the array is '.an-array.1'.
 
 # Usage #
 
