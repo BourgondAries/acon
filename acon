@@ -2,10 +2,18 @@
 
 old="$(pwd)"
 cd "${BASH_SOURCE[0]%/*}"
-acon_src="$(readlink ""${BASH_SOURCE[0]}"")"
+if [ -L "${BASH_SOURCE[0]}" ]; then
+	acon_src="$(readlink ""${BASH_SOURCE[0]}"")"
+fi
 acon_src="${acon_src%/acon}"
 cd "$acon_src"
 acon_src="$(pwd)"
 cd "$old"
 
-awk -f "$acon_src"/acon.awk | awk -v pattern="$1" '$1 ~ pattern { print; }'
+if [ $# -eq 0 ]; then
+	awk -f "$acon_src"/acon.awk
+elif [ $# -eq 1 ]; then
+	awk -f "$acon_src"/acon.awk | awk -v pattern="$1" '$1 ~ pattern { print; }'
+else
+	echo "This program only takes a single regular expression, but $# were given" >&2
+fi
