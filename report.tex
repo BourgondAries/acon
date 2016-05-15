@@ -329,6 +329,8 @@ whitespace on its on, you can use (g) for spaces, (K) for newlines.
 \begin{varwidth}{\linewidth}
 \begin{verbatim}
 { mail
+  recipient client_name
+  server    mail.extension
   [ message
     This is my message to you.
     The message can contain many lines.
@@ -460,8 +462,7 @@ UMEM ::= [ ws ] DATA | ARRAY | ENTRY;
 
 \begin{enumerate}
   \item json2acon - A JSON to ACON converter. (Written in Rust, using Serde)
-  \item acon - An ACON expander. (Written in awk)
-	\item getall - Gets all entries given a pattern of the first entry.
+  \item acon - An ACON expander and filter. (Written in awk)
 \end{enumerate}
 
 \noindent Tools that have to be implemented:
@@ -477,6 +478,5 @@ UMEM ::= [ ws ] DATA | ARRAY | ENTRY;
 
 \lstinputlisting[caption={json2acon, converts JSON to ACON},breaklines=true,frame=single,language=c++]{src/main.rs}
 \lstinputlisting[caption={acon, converting ACON to line-based ACON, and optionally filtering keys},breaklines=true,frame=single,language=awk]{acon}
-
 
 \end{document}
