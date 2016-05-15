@@ -26,3 +26,4 @@ It is also possible to filter the paths by a regular expression.
 
 	cat your-file | acon 'my-regex'
 
+Try running one of the files under test `*.input` as your-file.
